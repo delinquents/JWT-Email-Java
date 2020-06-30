@@ -4,9 +4,9 @@ jwt:
 
 server:
   port: 9090
-#  error:
-#    whitelabel:
-#      enabled: false
+  error:
+    whitelabel:
+      enabled: false
 
 #spring:
 #  datasource:
@@ -35,3 +35,7 @@ spring:
       enabled: true
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+#  mvc:
+#    throw-exception-if-no-handler-found: true
+#  resources:
+#    add-mappings: false
