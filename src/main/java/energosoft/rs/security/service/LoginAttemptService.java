@@ -1,15 +1,12 @@
 package energosoft.rs.security.service;
 
-
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import java.util.concurrent.ExecutionException;
-
 import static java.util.concurrent.TimeUnit.*;
 
 @Service

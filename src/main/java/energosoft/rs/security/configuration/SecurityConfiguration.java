@@ -1,6 +1,5 @@
 package energosoft.rs.security.configuration;
 
-
 import energosoft.rs.security.filter.JwtAccessDeniedHandler;
 import energosoft.rs.security.filter.JwtAuthenticationEntryPoint;
 import energosoft.rs.security.filter.JwtAuthorizationFilter;
@@ -20,7 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import static energosoft.rs.security.constant.SecurityConstant.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-
 
 
 @Configuration
