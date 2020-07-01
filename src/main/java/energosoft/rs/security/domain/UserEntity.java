@@ -27,7 +27,7 @@ public class UserEntity implements Serializable {
     private Date lastLoginDate;
     private Date lastLoginDateDisplay;
     private Date joinDate;
-    private String[] roles; // ROLE_USER {read, write }, ROLE_ADMIN
+    private String role; // ROLE_USER {read, write }, ROLE_ADMIN
     private String[] authorities;
     private boolean isActive;
     private boolean isNotLocked;
