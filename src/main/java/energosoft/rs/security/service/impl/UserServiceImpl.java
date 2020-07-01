@@ -8,6 +8,7 @@ import energosoft.rs.security.exception.domain.EmailExistException;
 import energosoft.rs.security.exception.domain.UserNotFoundException;
 import energosoft.rs.security.exception.domain.UsernameExistException;
 import energosoft.rs.security.repository.UserRepository;
+import energosoft.rs.security.service.LoginAttemptService;
 import energosoft.rs.security.service.UserService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +26,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static energosoft.rs.security.constant.SecurityConstant.*;
 
@@ -36,20 +38,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private Logger LOGGER = LoggerFactory.getLogger(getClass());
     private UserRepository userRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private LoginAttemptService loginAttemptService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserServiceImpl(UserRepository userRepository,
+                           BCryptPasswordEncoder bCryptPasswordEncoder,
+                           LoginAttemptService loginAttemptService) {
+
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.loginAttemptService = loginAttemptService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userRepository.findUserEntityByUsername(username);
                 if (user == null) {
-                    LOGGER.error(USER_NOT_FOUND_BY_USERNAME + username);
+                   LOGGER.error(USER_NOT_FOUND_BY_USERNAME + username);
                    throw new UsernameNotFoundException("User not found by username:" + username);
                 } else {
+                    validateLoginAttempt(user);
                     user.setLastLoginDateDisplay(user.getLastLoginDate());
                     user.setLastLoginDate(new Date());
                     userRepository.save(user);
@@ -57,6 +65,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     LOGGER.info("Returning found user by username: " + username);
                     return userPrincipal;
                 }
+    }
+
+    private void validateLoginAttempt(UserEntity user)  {
+        if (user.isNotLocked()) {
+           if(loginAttemptService.hasExceededMaxAttempts(user.getUsername())) {
+               user.setNotLocked(false); // user is locked exceeded 5 attempts
+           } else {
+               user.setNotLocked(true);
+           }
+        } else {
+            loginAttemptService.evictUserFromLoginAttemptCache(user.getUsername());
+        }
     }
 
 
