@@ -7,6 +7,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.stereotype.Component;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 @Component
 public class AuthenticationSuccessListener {
 

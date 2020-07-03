@@ -40,6 +40,10 @@ import static java.nio.file.Files.*;
 import static java.nio.file.StandardCopyOption.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 @Service
 @Transactional
 @Qualifier("userDetailsService")
@@ -103,10 +107,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setPassword(encodePassword(password));
         user.setActive(true);
         user.setNotLocked(true);
-//        user.setRole(Role.ROLE_USER.name());
-//        user.setAuthorities(Role.ROLE_USER.getAuthorities());
-        user.setRole(Role.ROLE_SUPER_ADMIN.name());
-        user.setAuthorities(Role.ROLE_SUPER_ADMIN.getAuthorities());
+        user.setRole(Role.ROLE_USER.name());
+        user.setAuthorities(Role.ROLE_USER.getAuthorities());
+//        user.setRole(Role.ROLE_SUPER_ADMIN.name());
+//        user.setAuthorities(Role.ROLE_SUPER_ADMIN.getAuthorities());
         user.setProfileImageUrl(getTemporaryProfileImageUrl(username));
         userRepository.save(user);
         LOGGER.info("New user password: " + password);

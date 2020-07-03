@@ -23,6 +23,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 @Component
 public class JWTTokenProvider {
 
@@ -50,26 +54,26 @@ public class JWTTokenProvider {
     }
 
     public boolean isTokenValid(String username, String token) {
-        com.auth0.jwt.interfaces.JWTVerifier verifier = getJWTVerifier();
+        JWTVerifier verifier = getJWTVerifier();
         return StringUtils.isNotEmpty(username) && !isTokenExpired(verifier, token);
     }
 
     public String getSubject(String token) {
-        com.auth0.jwt.interfaces.JWTVerifier verifier = getJWTVerifier();
+        JWTVerifier verifier = getJWTVerifier();
         return verifier.verify(token).getSubject();
     }
 
-    private boolean isTokenExpired(com.auth0.jwt.interfaces.JWTVerifier verifier, String token) {
+    private boolean isTokenExpired(JWTVerifier verifier, String token) {
         Date expiration = verifier.verify(token).getExpiresAt();
         return expiration.before(new Date());
     }
 
     private String[] getClaimsFromToken(String token) {
-        com.auth0.jwt.interfaces.JWTVerifier verifier = getJWTVerifier();
+        JWTVerifier verifier = getJWTVerifier();
         return verifier.verify(token).getClaim(AUTHORITIES).asArray(String.class);
     }
 
-    private com.auth0.jwt.interfaces.JWTVerifier getJWTVerifier() {
+    private JWTVerifier getJWTVerifier() {
         JWTVerifier verifier;
         try {
             Algorithm algorithm = HMAC512(secret);

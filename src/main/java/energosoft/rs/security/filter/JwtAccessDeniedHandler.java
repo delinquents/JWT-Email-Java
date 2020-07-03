@@ -16,6 +16,10 @@ import static energosoft.rs.security.constant.SecurityConstant.ACCESS_DENIED_MES
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 

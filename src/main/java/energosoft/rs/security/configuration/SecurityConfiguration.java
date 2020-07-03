@@ -20,6 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import static energosoft.rs.security.constant.SecurityConstant.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
 
 @Configuration
 @EnableWebSecurity

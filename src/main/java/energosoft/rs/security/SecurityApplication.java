@@ -13,6 +13,10 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 @SpringBootApplication
 public class SecurityApplication {
 

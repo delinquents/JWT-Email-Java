@@ -11,6 +11,10 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 public interface UserService {
 
     User register(String firstName, String lastName, String username, String email) throws UserNotFoundException, UsernameExistException, EmailExistException, MessagingException;

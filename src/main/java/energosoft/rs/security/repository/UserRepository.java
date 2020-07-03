@@ -8,6 +8,10 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 

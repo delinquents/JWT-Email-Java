@@ -1,6 +1,8 @@
 package energosoft.rs.security.exception.domain;
 
-
+/**
+ *  @Author: Veljko Siracki
+ **/
 
 public class EmailNotFoundException extends  Exception{
 

@@ -1,5 +1,9 @@
 package energosoft.rs.security.constant;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 public class FileConstant {
 
     public static final String USER_IMAGE_PATH = "/user/image/";

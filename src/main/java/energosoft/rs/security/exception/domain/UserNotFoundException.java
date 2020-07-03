@@ -1,5 +1,9 @@
 package energosoft.rs.security.exception.domain;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 public class UserNotFoundException extends Exception {
 
 

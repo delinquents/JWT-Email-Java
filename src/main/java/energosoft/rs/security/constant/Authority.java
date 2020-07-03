@@ -1,7 +1,9 @@
 package energosoft.rs.security.constant;
 
-import lombok.Data;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
 
 public class Authority {
 

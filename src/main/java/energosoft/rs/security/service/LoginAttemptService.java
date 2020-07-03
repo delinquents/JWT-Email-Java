@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.ExecutionException;
 import static java.util.concurrent.TimeUnit.*;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 @Service
 public class LoginAttemptService {
 

@@ -17,6 +17,10 @@ import static energosoft.rs.security.constant.SecurityConstant.FORBIDDEN_MESSAGE
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 @Component
 public class JwtAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
 

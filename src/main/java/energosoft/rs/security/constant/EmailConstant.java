@@ -1,5 +1,9 @@
 package energosoft.rs.security.constant;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 public class EmailConstant {
 
     public static final String SIMPLE_MAIL_TRANSFER_PROTOCOL = "smtps";

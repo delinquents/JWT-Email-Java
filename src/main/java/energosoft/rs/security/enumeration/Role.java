@@ -2,6 +2,10 @@ package energosoft.rs.security.enumeration;
 
 import static energosoft.rs.security.constant.Authority.*;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 public enum Role {
 
     ROLE_USER(USER_AUTHORITIES),

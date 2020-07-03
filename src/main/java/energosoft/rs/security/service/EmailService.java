@@ -13,6 +13,9 @@ import java.util.Properties;
 
 import static energosoft.rs.security.constant.EmailConstant.*;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
 
 @Service
 public class EmailService {

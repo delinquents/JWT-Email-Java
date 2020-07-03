@@ -9,6 +9,10 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 public class UserPrincipal implements UserDetails {
 
     private User user;

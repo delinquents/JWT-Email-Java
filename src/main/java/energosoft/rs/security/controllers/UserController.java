@@ -38,6 +38,10 @@ import static energosoft.rs.security.constant.FileConstant.*;
 import static energosoft.rs.security.constant.SecurityConstant.JWT_TOKEN_HEADER;
 import static org.springframework.http.HttpStatus.*;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 @RestController
 @RequestMapping(path = { "/", "/user"})
 public class UserController   extends ExceptionHandling {

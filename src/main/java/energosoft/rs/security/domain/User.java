@@ -7,6 +7,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 @Data
 @Entity
 @Table(name = "`User`")

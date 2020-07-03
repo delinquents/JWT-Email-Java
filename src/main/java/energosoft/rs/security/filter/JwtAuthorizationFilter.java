@@ -20,6 +20,10 @@ import static energosoft.rs.security.constant.SecurityConstant.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.OK;
 
+/**
+ *  @Author: Veljko Siracki
+ **/
+
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
