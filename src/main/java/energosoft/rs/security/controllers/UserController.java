@@ -1,7 +1,7 @@
 package energosoft.rs.security.controllers;
 
 
-import energosoft.rs.security.domain.UserEntity;
+import energosoft.rs.security.domain.User;
 import energosoft.rs.security.domain.UserPrincipal;
 import energosoft.rs.security.exception.ExceptionHandling;
 import energosoft.rs.security.exception.domain.EmailExistException;
@@ -56,15 +56,15 @@ public class UserController   extends ExceptionHandling {
     }
 
     @PostMapping ("/register")
-    public ResponseEntity<UserEntity> register(@RequestBody UserEntity user) throws UserNotFoundException, UsernameExistException, EmailExistException, MessagingException {
-        UserEntity newUser = userService.register(user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail());
+    public ResponseEntity<User> register(@RequestBody User user) throws UserNotFoundException, UsernameExistException, EmailExistException, MessagingException {
+        User newUser = userService.register(user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail());
     return  new ResponseEntity<>(newUser, OK);
     }
 
     @PostMapping ("/login")
-    public ResponseEntity<UserEntity> showUser(@RequestBody UserEntity user) throws UserNotFoundException, UsernameExistException, EmailExistException {
+    public ResponseEntity<User> showUser(@RequestBody User user) throws UserNotFoundException, UsernameExistException, EmailExistException {
         authenticate(user.getUsername(), user.getPassword());
-        UserEntity loginUser = userService.findUserByUsername(user.getUsername());
+        User loginUser = userService.findUserByUsername(user.getUsername());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
         LOGGER.info("Generated JWTToken: " + jwtTokenProvider.generateJwtToken(userPrincipal));
@@ -72,54 +72,54 @@ public class UserController   extends ExceptionHandling {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<UserEntity> addNewUser(@RequestParam("firstName") String firstName,
-                                                 @RequestParam("lastName") String lastName,
-                                                 @RequestParam("username") String username,
-                                                 @RequestParam("email") String email,
-                                                 @RequestParam("role") String role,
-                                                 @RequestParam("isActive") String isActive,
-                                                 @RequestParam("isNonLocked") String isNonLocked,
-                                                 @RequestParam(value = "profileImage" , required = false) MultipartFile profileImage) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException {
-        UserEntity newUser = userService.addNewUser(firstName, lastName, username, email, role,
+    public ResponseEntity<User> addNewUser(@RequestParam("firstName") String firstName,
+                                           @RequestParam("lastName") String lastName,
+                                           @RequestParam("username") String username,
+                                           @RequestParam("email") String email,
+                                           @RequestParam("role") String role,
+                                           @RequestParam("isActive") String isActive,
+                                           @RequestParam("isNonLocked") String isNonLocked,
+                                           @RequestParam(value = "profileImage" , required = false) MultipartFile profileImage) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException {
+        User newUser = userService.addNewUser(firstName, lastName, username, email, role,
                 Boolean.parseBoolean(isNonLocked),Boolean.parseBoolean(isActive), profileImage);
 
         return new ResponseEntity<>(newUser, OK);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<UserEntity> update(    @RequestParam("currentUsername") String currentUsername,
-                                                 @RequestParam("firstName") String firstName,
-                                                 @RequestParam("lastName") String lastName,
-                                                 @RequestParam("username") String username,
-                                                 @RequestParam("email") String email,
-                                                 @RequestParam("role") String role,
-                                                 @RequestParam("isActive") String isActive,
-                                                 @RequestParam("isNonLocked") String isNonLocked,
-                                                 @RequestParam(value = "profileImage" , required = false) MultipartFile profileImage) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException {
-        UserEntity updatedUser = userService.updateUser(currentUsername ,firstName, lastName, username, email, role,
+    public ResponseEntity<User> update(@RequestParam("currentUsername") String currentUsername,
+                                       @RequestParam("firstName") String firstName,
+                                       @RequestParam("lastName") String lastName,
+                                       @RequestParam("username") String username,
+                                       @RequestParam("email") String email,
+                                       @RequestParam("role") String role,
+                                       @RequestParam("isActive") String isActive,
+                                       @RequestParam("isNonLocked") String isNonLocked,
+                                       @RequestParam(value = "profileImage" , required = false) MultipartFile profileImage) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException {
+        User updatedUser = userService.updateUser(currentUsername ,firstName, lastName, username, email, role,
                 Boolean.parseBoolean(isNonLocked),Boolean.parseBoolean(isActive), profileImage);
 
         return new ResponseEntity<>(updatedUser, OK);
     }
 
     @PostMapping("/updateProfileImage")
-    public ResponseEntity<UserEntity> updatePorfileImage(
+    public ResponseEntity<User> updatePorfileImage(
                                                  @RequestParam("username") String username,
                                                  @RequestParam(value = "profileImage") MultipartFile profileImage) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException {
-        UserEntity updatedUser = userService.updateProfileImage(username, profileImage);
+        User updatedUser = userService.updateProfileImage(username, profileImage);
 
         return new ResponseEntity<>(updatedUser, OK);
     }
 
     @GetMapping("/find/{username}")
-    public ResponseEntity<UserEntity> getUser(@PathVariable String username) {
-        UserEntity foundUser = userService.findUserByUsername(username);
+    public ResponseEntity<User> getUser(@PathVariable String username) {
+        User foundUser = userService.findUserByUsername(username);
         return new ResponseEntity<>(foundUser, OK);
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<UserEntity>> getAllUsers() {
-        List<UserEntity> users = userService.getUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getUsers();
         return new ResponseEntity<>(users, OK);
     }
 
@@ -129,10 +129,10 @@ public class UserController   extends ExceptionHandling {
         return response(OK, "An email whit a new password was send to: " + email);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{username}")
     @PreAuthorize("hasAnyAuthority('user:delete')")
-    public ResponseEntity<HttpResponse> deleteUser(@PathVariable long id) {
-        userService.deleteUser(id);
+    public ResponseEntity<HttpResponse> deleteUser(@PathVariable String username) {
+        userService.deleteUser(username);
         return response(NO_CONTENT, "User deleted successfully");
     }
 

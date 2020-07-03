@@ -1,6 +1,5 @@
 package energosoft.rs.security.listener;
 
-import energosoft.rs.security.domain.UserEntity;
 import energosoft.rs.security.domain.UserPrincipal;
 import energosoft.rs.security.service.LoginAttemptService;
 import org.springframework.beans.factory.annotation.Autowired;

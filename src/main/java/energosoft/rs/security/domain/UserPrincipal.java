@@ -11,9 +11,9 @@ import static java.util.Arrays.stream;
 
 public class UserPrincipal implements UserDetails {
 
-    private UserEntity user;
+    private User user;
 
-    public UserPrincipal(UserEntity user) {
+    public UserPrincipal(User user) {
         this.user = user;
     }
 

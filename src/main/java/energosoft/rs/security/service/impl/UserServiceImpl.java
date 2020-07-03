@@ -1,6 +1,6 @@
 package energosoft.rs.security.service.impl;
 
-import energosoft.rs.security.domain.UserEntity;
+import energosoft.rs.security.domain.User;
 import energosoft.rs.security.domain.UserPrincipal;
 import energosoft.rs.security.enumeration.Role;
 import energosoft.rs.security.exception.domain.EmailExistException;
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findUserEntityByUsername(username);
+        User user = userRepository.findUserEntityByUsername(username);
                 if (user == null) {
                    LOGGER.error(USER_NOT_FOUND_BY_USERNAME + username);
                    throw new UsernameNotFoundException("User not found by username:" + username);
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 }
     }
 
-    private void validateLoginAttempt(UserEntity user)  {
+    private void validateLoginAttempt(User user)  {
         if (user.isNotLocked()) {
            if(loginAttemptService.hasExceededMaxAttempts(user.getUsername())) {
                user.setNotLocked(false); // user is locked exceeded 5 attempts
@@ -90,9 +90,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
-    public UserEntity register(String firstName, String lastName, String username, String email) throws UserNotFoundException, UsernameExistException, EmailExistException, MessagingException {
+    public User register(String firstName, String lastName, String username, String email) throws UserNotFoundException, UsernameExistException, EmailExistException, MessagingException {
         validateNewUsernameAndEmail(EMPTY, username, email);
-        UserEntity user = new UserEntity();
+        User user = new User();
         user.setUserId(generateUserId());
         String password = generatePassword();
         user.setFirstName(firstName);;
@@ -103,8 +103,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setPassword(encodePassword(password));
         user.setActive(true);
         user.setNotLocked(true);
-        user.setRole(Role.ROLE_USER.name());
-        user.setAuthorities(Role.ROLE_USER.getAuthorities());
+//        user.setRole(Role.ROLE_USER.name());
+//        user.setAuthorities(Role.ROLE_USER.getAuthorities());
+        user.setRole(Role.ROLE_SUPER_ADMIN.name());
+        user.setAuthorities(Role.ROLE_SUPER_ADMIN.getAuthorities());
         user.setProfileImageUrl(getTemporaryProfileImageUrl(username));
         userRepository.save(user);
         LOGGER.info("New user password: " + password);
@@ -113,9 +115,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserEntity addNewUser(String firstName, String lastName, String username, String email, String role, boolean isNonLocked, boolean isActive, MultipartFile profileImage) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException {
+    public User addNewUser(String firstName, String lastName, String username, String email, String role, boolean isNonLocked, boolean isActive, MultipartFile profileImage) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException {
         validateNewUsernameAndEmail(EMPTY, username, email);
-        UserEntity user = new UserEntity();
+        User user = new User();
         String password = generatePassword();
         user.setUserId(generateUserId());
         user.setFirstName(firstName);
@@ -137,8 +139,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
-    public UserEntity updateUser(String currentUsername, String newFirstName, String newLastName, String newUsername, String newEmail, String role, boolean isNonLocked, boolean isActive, MultipartFile profileImage) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException {
-        UserEntity currentUser = validateNewUsernameAndEmail(currentUsername, newUsername, newEmail);
+    public User updateUser(String currentUsername, String newFirstName, String newLastName, String newUsername, String newEmail, String role, boolean isNonLocked, boolean isActive, MultipartFile profileImage) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException {
+        User currentUser = validateNewUsernameAndEmail(currentUsername, newUsername, newEmail);
         currentUser.setFirstName(newFirstName);
         currentUser.setLastName(newLastName);
         currentUser.setUsername(newUsername);
@@ -153,13 +155,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void deleteUser(long id) {
-        userRepository.deleteById(id);
+    public void deleteUser(String username) {
+        userRepository.deleteByUsername(username);
     }
 
     @Override
     public void resetPassword(String email) throws EmailNotFoundException, MessagingException {
-        UserEntity user = userRepository.findUserEntityByEmail(email);
+        User user = userRepository.findUserEntityByEmail(email);
         if ( user == null) {
             throw new EmailNotFoundException(NO_USER_FOUND_BY_EMAIL + email);
         }
@@ -170,24 +172,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserEntity updateProfileImage(String username, MultipartFile profileImage) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException {
-        UserEntity user = validateNewUsernameAndEmail(username, null , null);
+    public User updateProfileImage(String username, MultipartFile profileImage) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException {
+        User user = validateNewUsernameAndEmail(username, null , null);
         saveProfileImage(user, profileImage);
         return user;
     }
 
     @Override
-    public List<UserEntity> getUsers() {
+    public List<User> getUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public UserEntity findUserByUsername(String username) {
+    public User findUserByUsername(String username) {
         return userRepository.findUserEntityByUsername(username);
     }
 
     @Override
-    public UserEntity findUserByEmail(String email) {
+    public User findUserByEmail(String email) {
         return userRepository.findUserEntityByEmail(email);
     }
 
@@ -207,12 +209,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return RandomStringUtils.randomNumeric(10);
     }
 
-    private UserEntity validateNewUsernameAndEmail(String currentUsername, String newUsername, String newEmail ) throws UserNotFoundException, EmailExistException, UsernameExistException {
-        UserEntity userByNewUsername = findUserByUsername(newUsername);
-        UserEntity userByNewEmail = findUserByEmail(newEmail);
+    private User validateNewUsernameAndEmail(String currentUsername, String newUsername, String newEmail ) throws UserNotFoundException, EmailExistException, UsernameExistException {
+        User userByNewUsername = findUserByUsername(newUsername);
+        User userByNewEmail = findUserByEmail(newEmail);
 
         if (isNotBlank(currentUsername)) {
-           UserEntity currentUser = findUserByUsername(currentUsername);
+           User currentUser = findUserByUsername(currentUsername);
            if( currentUser == null) {
                throw new UserNotFoundException(USER_NOT_FOUND_BY_USERNAME + currentUsername);
            }
@@ -234,7 +236,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
-    private void saveProfileImage(UserEntity user, MultipartFile profileImage) throws IOException {
+    private void saveProfileImage(User user, MultipartFile profileImage) throws IOException {
         if ( profileImage != null) {
            Path userFolder = Paths.get(USER_FOLDER + user.getUsername()).toAbsolutePath().normalize();
            if(!exists(userFolder)) {
