@@ -9,6 +9,7 @@ import energosoft.rs.security.exception.domain.EmailNotFoundException;
 import energosoft.rs.security.exception.domain.UserNotFoundException;
 import energosoft.rs.security.exception.domain.UsernameExistException;
 import energosoft.rs.security.service.UserService;
+import energosoft.rs.security.ui.request.UserRequestModel;
 import energosoft.rs.security.ui.response.HttpResponse;
 import energosoft.rs.security.utilty.JWTTokenProvider;
 import org.slf4j.Logger;
@@ -20,7 +21,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -157,6 +160,13 @@ public class UserController   extends ExceptionHandling {
             }
         }
         return byteArrayOutputStream.toByteArray();
+    }
+
+    @PostMapping(path = "/changePassword")
+    public ResponseEntity<HttpResponse> changePassword(@RequestBody UserRequestModel requestModel) throws LockedException, IOException {
+        LOGGER.info("USER: "  + SecurityContextHolder.getContext().getAuthentication().getDetails().toString());
+        userService.changePassword(requestModel.getUsername(), requestModel.getPassword());
+        return response(OK, "Password changed successfully");
     }
 
     private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {

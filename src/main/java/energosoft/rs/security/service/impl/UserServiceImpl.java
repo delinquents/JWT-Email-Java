@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -65,7 +66,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findUserEntityByUsername(username);
+        User user = userRepository.findUserByUsername(username);
                 if (user == null) {
                    LOGGER.error(USER_NOT_FOUND_BY_USERNAME + username);
                    throw new UsernameNotFoundException("User not found by username:" + username);
@@ -107,10 +108,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setPassword(encodePassword(password));
         user.setActive(true);
         user.setNotLocked(true);
-        user.setRole(Role.ROLE_USER.name());
-        user.setAuthorities(Role.ROLE_USER.getAuthorities());
-//        user.setRole(Role.ROLE_SUPER_ADMIN.name());
-//        user.setAuthorities(Role.ROLE_SUPER_ADMIN.getAuthorities());
+//        user.setRole(Role.ROLE_USER.name());
+//        user.setAuthorities(Role.ROLE_USER.getAuthorities());
+        user.setRole(Role.ROLE_SUPER_ADMIN.name());
+        user.setAuthorities(Role.ROLE_SUPER_ADMIN.getAuthorities());
         user.setProfileImageUrl(getTemporaryProfileImageUrl(username));
         userRepository.save(user);
         LOGGER.info("New user password: " + password);
@@ -165,7 +166,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void resetPassword(String email) throws EmailNotFoundException, MessagingException {
-        User user = userRepository.findUserEntityByEmail(email);
+        User user = userRepository.findUserByEmail(email);
         if ( user == null) {
             throw new EmailNotFoundException(NO_USER_FOUND_BY_EMAIL + email);
         }
@@ -183,18 +184,29 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void changePassword(String username, String password) throws LockedException {
+        User foundUser = userRepository.findUserByUsername(username);
+        if(foundUser.isNotLocked()) {
+            foundUser.setPassword(encodePassword(password));
+            userRepository.save(foundUser);
+        } else {
+            throw new LockedException(USER_LOCKED);
+        }
+    }
+
+    @Override
     public List<User> getUsers() {
         return userRepository.findAll();
     }
 
     @Override
     public User findUserByUsername(String username) {
-        return userRepository.findUserEntityByUsername(username);
+        return userRepository.findUserByUsername(username);
     }
 
     @Override
     public User findUserByEmail(String email) {
-        return userRepository.findUserEntityByEmail(email);
+        return userRepository.findUserByEmail(email);
     }
 
     private String getTemporaryProfileImageUrl(String username) {

@@ -16,8 +16,8 @@ import javax.transaction.Transactional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
 
-    User findUserEntityByUsername(String username);
-    User findUserEntityByEmail(String email);
+    User findUserByUsername(String username);
+    User findUserByEmail(String email);
 
     @Modifying
     @Query("delete from User u where u.username = ?1 ")
